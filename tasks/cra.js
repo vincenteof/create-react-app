@@ -58,6 +58,9 @@ if (gitStatus.trim() !== '') {
   process.exit(1);
 }
 
+// by vincent:
+// if `package.json` in `../packages` contains dependency which is also in `../packages`,
+// use the local path in original `package.json`
 const rootDir = path.join(__dirname, '..');
 const packagesDir = path.join(rootDir, 'packages');
 const packagePathsByName = {};
@@ -113,7 +116,9 @@ const args = process.argv.slice(2);
 // Now run the CRA command
 const craScriptPath = path.join(packagesDir, 'create-react-app', 'index.js');
 cp.execSync(
-  `node ${craScriptPath} --scripts-version="${scriptsPath}" ${args.join(' ')}`,
+  `node --inspect-brk ${craScriptPath} --scripts-version="${scriptsPath}" ${args.join(
+    ' '
+  )}`,
   {
     cwd: rootDir,
     stdio: 'inherit',
